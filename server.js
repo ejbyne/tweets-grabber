@@ -13,7 +13,7 @@ app.get('/', function(request, response) {
 });
 
 server.listen(port, function() {
-  console.log('Server listening on port ' + port);
+  // console.log('Server listening on port ' + port);
 });
 
 var auth = new Twit({
@@ -27,7 +27,7 @@ var insideM25 = ['-0.5804005', '51.2369701', '0.248181', '51.6543771'];
 
 var stream = auth.stream('statuses/filter', { locations: insideM25 });
 
-var count = 0
+// var count = 0
 
 stream.on('tweet', function (tweet) {
 
@@ -38,8 +38,8 @@ stream.on('tweet', function (tweet) {
     if(err) {
       console.log(err);
     } else {
-      count++;
-      console.log(count + ' ' + tweet.text);
+      // count++;
+      // console.log(count + ' ' + tweet.text);
     }
   });
 });
