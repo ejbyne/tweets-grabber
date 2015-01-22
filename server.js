@@ -31,7 +31,10 @@ var count = 0
 
 stream.on('tweet', function (tweet) {
 
-  fs.appendFile("./tweets.txt", JSON.stringify(tweet) + "\n", function(err) {
+  var date = new Date();
+  var today = date.getDay();
+
+  fs.appendFile(today + ".txt", JSON.stringify(tweet) + "\n", function(err) {
     if(err) {
       console.log(err);
     } else {
