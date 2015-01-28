@@ -5,6 +5,7 @@ var TweetSchema = new Schema({
 
   _id: String,
   createdAt: Date,
+  timeSlot: Number,
   content: String,
   longitude: Number,
   latitude: Number,

@@ -47,10 +47,13 @@ stream.on('tweet', function(tweet) {
     }
   });
 
-  if (tweet.coordinates != null) {
+  if (tweet.coordinates != null && latIsFine(tweet.coordinates.coordinates[1]) && longIsFine(tweet.coordinates.coordinates[0])) {
     var newTweetObject = new Tweet;
+    var hourCreated = new Date(tweet.created_at).getHours();
+
     newTweetObject._id = tweet.id_str;
     newTweetObject.createdAt = tweet.created_at;
+    newTweetObject.timeSlot = findTimeSlot(hourCreated);
     newTweetObject.content = tweet.text;
     newTweetObject.longitude = tweet.coordinates.coordinates[0];
     newTweetObject.latitude = tweet.coordinates.coordinates[1];
@@ -59,5 +62,17 @@ stream.on('tweet', function(tweet) {
     newTweetObject.save();
   };
 });
+
+function latIsFine (latitude){
+  return latitude >= 51.2369701 && latitude <= 51.6543771;
+}
+
+function longIsFine(longitude){
+  return longitude >= -0.5804005 && longitude <= 0.248181;
+}
+
+function findTimeSlot(hourCreated) {
+  return Math.floor(hourCreated / 4) + 1;
+}
 
 module.exports = server;
