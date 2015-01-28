@@ -3,13 +3,17 @@ var app = express();
 var server = require('http').createServer(app);
 var Twit = require('twit');
 var fs = require('fs');
-
+var mongoose = require('mongoose');
+var Tweet = require('./app/tweetRepo.js');
 var port = process.env.PORT || 3000;
+var buffer;
+
+mongoose.connect("mongodb://localhost:27017/tweets_production");
 
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', function(request, response) {
-  response.sendFile(__dirname + '/views/index.html');
+  // response.sendFile(__dirname + '/views/index.html');
 });
 
 server.listen(port, function() {
@@ -29,7 +33,7 @@ var stream = auth.stream('statuses/filter', { locations: insideM25 });
 
 // var count = 0
 
-stream.on('tweet', function (tweet) {
+stream.on('tweet', function(tweet) {
 
   var date = new Date();
   var today = date.getDay();
@@ -42,6 +46,18 @@ stream.on('tweet', function (tweet) {
       // console.log(count + ' ' + tweet.text);
     }
   });
+
+  if (tweet.coordinates != null) {
+    var newTweetObject = new Tweet;
+    newTweetObject._id = tweet.id_str;
+    newTweetObject.createdAt = tweet.created_at;
+    newTweetObject.content = tweet.text;
+    newTweetObject.longitude = tweet.coordinates.coordinates[0];
+    newTweetObject.latitude = tweet.coordinates.coordinates[1];
+    newTweetObject.userId = tweet.user.id_str;
+    newTweetObject.username = tweet.user.screen_name;
+    newTweetObject.save();
+  };
 });
 
 module.exports = server;
